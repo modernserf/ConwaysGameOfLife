@@ -164,5 +164,6 @@ Main.prototype = {
 
 // Fight!
 var game = new Main('grid').bindEvents();
-game.random();
-game.start();
+// game.random();
+game.center();
+// game.start();
