@@ -15,20 +15,25 @@
     <![endif]-->
 
     <title>Conway's Game of Life by DiegoSalazar</title>
+    <style>
+      [hidden] {
+        display: none;
+      }
+    </style>
   </head>
 
   <body>
     <div id="content-wrapper">
       <div class="inner clearfix">
         <section id="main-content">
-          
+
           <canvas id="grid" style="width: 100%"></canvas>
-          
+
         </section>
 
         <aside id="sidebar">
           <div id="controls">
-            <div id="readout">
+            <div id="readout" hidden>
               <p>Elapsed:          <span id="clock">00:00:00</span></p>
               <p>                  <span id="evolving">Not yet</span></p>
               <p>Live Cells:       <span id="liveCellCount">0</span></p>
@@ -38,27 +43,30 @@
 
             <ul id="btns">
               <li>
-                <button id="toggle">Play (space)</button><button id="reset">Reset (r)</button>
+                <button id="toggle">Play</button><button id="reset">Reset</button>
               </li>
               <li>
+                <button id="r-pentomino">R Pentomino</button>
+              </li>
+              <li>
+                <button id="gosper">Gosper's Glider Gun</button>
+              </li>
+              <li hidden>
                 <button id="center" title="Press the letter o to center the cells">Center (o)</button>
                 <button class="lineBtn vertical" title="Seed a line of cells through the vertical center">V Line (v)</button>
                 <button class="lineBtn" title="Seed a line of cells through the horizontal center">H Line (h)</button>
               </li>
-              <li>
+              <li hidden>
                 <button id="clear">Clear (c)</button><button id="random">Random Seed (s)</button><button id="save">Save</button>
               </li>
-              <li>
+              <li hidden>
                 PreSeed:
                 <select id="preSeed">
-                  <option value="sword">Sword</option>
                   <option value="gosper">Gosper's Glider Gun</option>
-                  <option value="rorschach">Rorschach</option>
                   <option selected="selected" value="fpentomino">R Pentomino</option>
-                  <option value="diehard">Diehard</option>
                 </select>
               </li>
-              <li>
+              <li hidden>
                 Render Style:
                 <select id="renderStyle" />
                   <option selected="selected" value="block">Blocky</option>
@@ -68,34 +76,34 @@
               </li>
             </ul>
 
-            <form id="update" action="" method="">
+            <form id="update" action="" method="" hidden>
               <label>
-                FPS: 
-                <input type="text" id="fps" value="10" />
+                FPS:
+                <input type="text" id="fps" value="15" />
               </label>
               <label>
-                Width: 
+                Width:
                 <input type="text" id="w" value="100" />
               </label>
               <label>
-                Height: 
+                Height:
                 <input type="text" id="h" value="100" />
               </label>
               <label>
-                Unit: 
+                Unit:
                 <input type="text" id="unit" value="4" />
               </label>
               <label>
-                Max Clumps: 
+                Max Clumps:
                 <input type="text" id="maxClumps" value="3000" />
               </label>
               <label>
-                Max Clump Size: 
+                Max Clump Size:
                 <input type="text" id="clumpSize" value="10" />
               </label>
               <input type="submit" value="Update" />
             </form>
-          </div>          
+          </div>
         </aside>
       </div>
     </div>
