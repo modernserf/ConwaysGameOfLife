@@ -15,7 +15,7 @@ function Main(canvas_id) {
 Main.prototype = {
   start: function() {
     var self = this, cellCount = 0;
-    
+
     setTimeout(function() {
       self.automaton.update().draw();
       cellCount = self.automaton.liveCellCount();
@@ -23,13 +23,13 @@ Main.prototype = {
       if (cellCount < 3) return self.playing = false;
       if (self.playing) setTimeout(arguments.callee, 1000 / self.io.fps);
     }, 1000 / this.io.fps);
-    
+
     this.playing = true;
-    this.io.showClock(true).toggle.text('Pause (space)');
+    this.io.showClock(true).toggle.text('Pause');
   },
   stop: function() {
     this.playing = false;
-    this.io.showClock(false).toggle.text('Play (space)');
+    this.io.showClock(false).toggle.text('Play');
   },
   toggle: function() {
     this.io.read();
@@ -40,6 +40,7 @@ Main.prototype = {
     this.io.read().resetClock();
     this.automaton = this.newAutomaton().draw();
     this.io.liveCellCount.text(this.automaton.liveCellCount());
+    this.center();
   },
   clear: function() {
     this.stop();
@@ -59,10 +60,10 @@ Main.prototype = {
     this.automaton = this.newAutomaton([]).randomSeed(this.io.maxClumps, this.io.clumpSize).draw();
     this.io.liveCellCount.text(this.automaton.liveCellCount());
   },
-  preSeed: function() {
+  preSeed: function(seed) {
     this.stop();
     this.io.read().resetClock();
-    this.automaton = this.newAutomaton().draw();
+    this.automaton = this.newAutomaton(seed).draw();
     this.center();
   },
   mouseX: function() {
@@ -74,14 +75,14 @@ Main.prototype = {
   toggleCell: function(e) {
     if (this.playing) { this.stop(); this.wasPlaying = true; }
     else this.wasPlaying = false;
-    
+
     this.e = e;
     this.tracedCells = [this.automaton.getCell(this.mouseX(), this.mouseY())];
-    
+
     var x = this.mouseX(),
         y = this.mouseY(),
         cell = this.automaton.getCell(x, y).toggle();
-    
+
     this.automaton.draw();
     this.io.liveCellCount.text(this.automaton.liveCellCount());
 
@@ -90,11 +91,11 @@ Main.prototype = {
   },
   startCellTrace: function() {
     var self = this;
-    
+
     this.canvas.mousemove(function(e) {
       self.e = e;
       var cell = self.automaton.getCell(self.mouseX(), self.mouseY());
-      
+
       if (cell.notIn(self.tracedCells)) {
         cell.revive();
         self.tracedCells.push(cell);
@@ -107,7 +108,7 @@ Main.prototype = {
     this.io.liveCellCount.text(this.automaton.liveCellCount());
     if (this.wasPlaying) this.start();
   },
-  line: function(vertical) { 
+  line: function(vertical) {
     var line = (vertical ? 'v' : 'h') + 'line';
     this.stop();
     Automaton.seeds[line] = this.automaton.lineSeed(vertical);
@@ -117,26 +118,26 @@ Main.prototype = {
   center:    function()         { this.automaton.center(); },
   bindEvents: function() {
     var self = this;
-    
-    $(document).keydown(function(e) {
-      var target = e.target.tagName.toLowerCase();
-      if (target == 'input' || target == 'select') return true;
-      var cmd = IO.codeMap[e.which];
 
-      switch(cmd) {
-        case 'spacebar': self.toggle(); break;
-        case 's':        self.random(); break;
-        case 'c':        self.clear(); break;
-        case 'r':        self.reset(); break;
-        case 'o':        self.center(); break;
-        case 'v':        self.line(true); break;
-        case 'h':        self.line(false); break;
-        case 'left': case 'above': case 'right': case 'below': self.moveClump(cmd); break;
-        default: return true;
-      }
-      return false;
-    });
-    
+    // $(document).keydown(function(e) {
+    //   var target = e.target.tagName.toLowerCase();
+    //   if (target == 'input' || target == 'select') return true;
+    //   var cmd = IO.codeMap[e.which];
+
+    //   switch(cmd) {
+    //     case 'spacebar': self.toggle(); break;
+    //     case 's':        self.random(); break;
+    //     case 'c':        self.clear(); break;
+    //     case 'r':        self.reset(); break;
+    //     case 'o':        self.center(); break;
+    //     case 'v':        self.line(true); break;
+    //     case 'h':        self.line(false); break;
+    //     case 'left': case 'above': case 'right': case 'below': self.moveClump(cmd); break;
+    //     default: return true;
+    //   }
+    //   return false;
+    // });
+
     this.io.toggle.click(function() { self.playing ? self.stop() : self.start(); });
     $('button#reset').click(function() { self.reset(); });
     $('button#clear').click(function() { self.clear(); });
@@ -152,7 +153,10 @@ Main.prototype = {
     $('select#renderStyle').change(function() { self.update(); });
     $('form#update').submit(function() { self.update(); return false; });
     $('option').click(function() { $(this).parent().blur(); });
-    
+
+    $('button#r-pentomino').click(function(){ self.preSeed('fpentomino');});
+    $('button#gosper').click(function(){ self.preSeed('gosper');});
+
     // toggle individual cells by clicking and/or click dragging
     this.canvas.mousedown(function(e) {
       self.toggleCell(e, this).startCellTrace();
