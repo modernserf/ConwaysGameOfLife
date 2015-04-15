@@ -63,6 +63,7 @@ Main.prototype = {
     this.stop();
     this.io.read().resetClock();
     this.automaton = this.newAutomaton().draw();
+    this.center();
   },
   mouseX: function() {
     return Math.floor((this.e.pageX - this.canvas.offset().left) / this.automaton.unit);
