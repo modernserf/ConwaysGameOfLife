@@ -18,6 +18,37 @@ function Automaton(canvas, w, h, unit, seed, renderOptions) {
   });
 }
 
+// takes RLE string and generates list of coord pairs.
+function decodeRLE (rleString) {
+  var tokens = rleString.match(/\d*\D/g);
+
+  var x = 0;
+  var y = 0;
+  return tokens.reduce(function (res, token){
+    var count = Number(token.replace(/\D/,'')) || 1;
+
+    // newline
+    if (token.match(/\$/)) {
+      y += count;
+      x = 0;
+      return res;
+    }
+
+    // alive
+    if (token.match(/o/)){ 
+      for (var i = 0; i < count; i++) {
+        res.push([x+i, y]);
+      }
+    } 
+    x += count;  
+
+    return res;
+  }, []);
+}
+
+var gunMaker = "16bo30b$16bobo16bo11b$16b2o17bobo9b$obo10bo21b2o10b$b2o11b2o31b$bo11b2o32b3$10b2o20b2o13b$11b2o19bobo9b3o$10bo21bo11bo2b$27bo17bob$27b2o18b$26bobo";
+
+
 // helps us find a cell's neighbors
 Automaton.wheres = ['aboveLeft', 'above', 'aboveRight', 'right', 'belowRight', 'below', 'belowLeft', 'left'];
 Automaton.adjust = {
@@ -32,9 +63,10 @@ Automaton.adjust = {
 }
 // http://en.wikipedia.org/wiki/Conway's_Game_of_Life
 Automaton.seeds = {
-  'gosper' : [[2, 6],[2, 7],[3, 6],[3, 7],[12,6],[12,7],[12,8],[13,5],[13,9],[14,4],[14,10],[15,4],[15,10],
-              [16,7],[17,5],[17,9],[18,6],[18,7],[18,8],[19,7],[22,4],[22,5],[22,6],[23, 4],[23,5],[23, 6],
-              [24,3],[24,7],[26,2],[26,3],[26,7],[26,8],[36,4],[36,5],[37,4],[37,5]], // thanks 535480/james from stackoverflow
+  // 'gosper' : [[2, 6],[2, 7],[3, 6],[3, 7],[12,6],[12,7],[12,8],[13,5],[13,9],[14,4],[14,10],[15,4],[15,10],
+  //             [16,7],[17,5],[17,9],[18,6],[18,7],[18,8],[19,7],[22,4],[22,5],[22,6],[23, 4],[23,5],[23, 6],
+  //             [24,3],[24,7],[26,2],[26,3],[26,7],[26,8],[36,4],[36,5],[37,4],[37,5]], // thanks 535480/james from stackoverflow
+  'gosper': decodeRLE(gunMaker),
   'sword' : [[26,10], [26,11], [26,12], [26,13], [26,14], [26,15], [26,16], [26,18], [26,19], [26,20],
              [26,23], [26,24], [26,25], [26,30], [26,31], [26,32], [26,33], [26,34], [26,35]],
   'spaceship' : [],

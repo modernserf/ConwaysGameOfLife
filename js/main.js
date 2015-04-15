@@ -63,6 +63,7 @@ Main.prototype = {
     this.stop();
     this.io.read().resetClock();
     this.automaton = this.newAutomaton().draw();
+    this.center();
   },
   mouseX: function() {
     return Math.floor((this.e.pageX - this.canvas.offset().left) / this.automaton.unit);
@@ -164,5 +165,6 @@ Main.prototype = {
 
 // Fight!
 var game = new Main('grid').bindEvents();
-game.random();
-game.start();
+// game.random();
+game.center();
+// game.start();
